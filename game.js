@@ -119,7 +119,7 @@
         };
         window.onkeyup = function (e) {
             keyState[e.keyCode] = false;
-        };
+        } ;
 
         this.isDown = function (keyCode) {
             return keyState[keyCode] === true;
