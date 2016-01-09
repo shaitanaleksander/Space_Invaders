@@ -4,6 +4,7 @@
         var canvas = document.getElementById(canvasId);
         var screen = canvas.getContext("2d");
 
+
         var gameSize = {
 
             x: canvas.width,
@@ -11,11 +12,12 @@
 
         };
 
+        this.bulletNumber = 0;
         this.bodies = [new Player(this, gameSize)];
         var self = this;
 
         var tick = function () {
-            self.update();
+            self.update(gameSize);
             self.draw(screen, gameSize);
             requestAnimationFrame(tick);
         };
@@ -27,8 +29,15 @@
 //###############################
     Game.prototype = {
 
-        update: function () {
+        update: function (gameSize) {
 
+            console.log(this.bodies.length);
+            for (var i = 0; i < this.bodies.length; i++) {
+                if(this.bodies[i].position.y < 0){
+                    this.bodies.splice(i, 1);
+                }
+
+            }
             for (var i = 0; i < this.bodies.length; i++) {
                 this.bodies[i].update()
             }
@@ -38,6 +47,10 @@
             for (var i = 0; i < this.bodies.length; i++) {
                 drawRect(screen, this.bodies[i]);
             }
+        },
+
+        addBody: function (body) {
+            this.bodies.push(body);
         }
     };
 
@@ -57,6 +70,42 @@
             if (this.keyboarder.isDown(this.keyboarder.KEYS.LEFT)) {
                 this.position.x -= 2;
             }
+            if (this.keyboarder.isDown(this.keyboarder.KEYS.RIGHT)) {
+                this.position.x += 2;
+
+            }
+            if (this.keyboarder.isDown(this.keyboarder.KEYS.SPACE)) {
+
+                if (this.game.bulletNumber < Math.random()*10) {
+                    var bullet = new Bullet({
+                        x: this.position.x + this.size.width / 2 - 3 / 2,
+                        y: this.position.y
+                    }, {x: 0, y: -6});
+                    this.game.addBody(bullet);
+                    this.game.bulletNumber++;
+                }
+                else {
+                    this.game.bulletNumber = Math.random()*10;
+                }
+
+            }
+
+        }
+    };
+
+//#######################################
+    var Bullet = function (position, velocity) {
+
+        this.size = {width: 3, height: 3};
+        this.position = position;
+        this.velocity = velocity;
+    };
+
+//#############################################
+    Bullet.prototype = {
+        update: function () {
+            this.position.x += this.velocity.x;
+            this.position.y += this.velocity.y;
 
         }
     };

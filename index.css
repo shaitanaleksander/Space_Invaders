@@ -1,0 +1,9 @@
+body{
+    background-color: dimgray;
+}
+
+#screen{
+    background-color: aliceblue;
+    display: block;
+    margin: auto;
+}
